@@ -1,0 +1,76 @@
+<!--
+  Copyright 2013,2015 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="alchemy-image-analysis">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-image-feature"><i class="fa fa-book"></i> Detect: </label>
+        <select type="text" id="node-input-image-feature" style="display: inline-block; width: 70%;">
+            <option value="imageFaces">Faces</option>
+            <option value="imageLink">URLs</option>
+            <option value="imageKeywords">Content Tags</option>
+        </select>
+    </div>
+    <div class="form-tips" id="node-missing-service-warning" style="display: none"><i class="fa fa-warning"></i><b> Warning:</b> There is no Alchemy API service connected
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="alchemy-image-analysis">
+    <p>Using the Question and Answer service you can connect to Watson, post questions, and receive responses.</p>
+    <p>There are two default corpora to choose from.</p>
+    <ul>
+        <li><b>Watson for Healthcare</b>, which derives cognitive conclusions from documents about health concerns and diseases.</li>
+        <li><b>Watson for Travel</b>, which responds to questions based on cognitive analysis of a corpus that was initially created from documents about travel and associated locations.</li>
+    </ul>
+    <p>The question you want to ask should be passed in on <b>msg.payload</b>.</p>
+    <p>If you choose to only return the top answer, the answer will returned in <b>msg.payload</b> and the confidence of that answer in <b>msg.confidence</b>.</p>
+    <p>If you choose to return all answers, the results array will be returned in <b>msg.payload</b>. Each answer in the array will have a <b>payload</b> and <b>confidence</b> property.</p>
+    <p>For more information about the Question and Answer service, read the <a href="https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/question-answer.html">documentation</a>.</p>
+</script>
+
+<script type="text/javascript">
+    (function() {
+
+        RED.nodes.registerType('alchemy-image-analysis', {
+            category: 'Alchemy API',
+            defaults: {
+              name: {value: ""},
+              "image-feature": {value: ""}
+            },
+            color: "rgb(32, 178, 239)",
+            inputs: 1,
+            outputs: 1,
+            icon: "question.png",
+            paletteLabel: "Image Analysis",
+            label: function() {
+                return this.name || "Image Analysis";
+            },
+            labelStyle: function() {
+                return this.name ? "node_label_italic" : "";
+            },
+            oneditprepare: function() {
+              $.getJSON('alchemy-image-analysis/vcap/', function(service) {
+                if (!service) {
+                  $("#node-missing-service-warning").show();
+                }
+              });
+            }
+        });
+    })();
+</script>

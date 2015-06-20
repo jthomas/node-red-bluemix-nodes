@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-var FEATURES = ["page-image", "image-keyword", "feed", "entity", 
-  "keyword", "title", "author", "taxonomy", "concept", "relation",
-  "pub-date", "doc-sentiment"];
+
+var FEATURE_RESPONSES = {
+  faces: 'imageFaces',
+  imageLink: "image",
+  imageKeywords: "FILL ME IN"
+};
 
 module.exports = function (RED) {
   var cfenv = require('cfenv'),
@@ -24,11 +27,11 @@ module.exports = function (RED) {
   //TODO: Can I find the service using regex?
   var service = cfenv.getAppEnv().getService('AlchemyAPI');
 
-  RED.httpAdmin.get('/alchemy-api/vcap', function (req, res) {
+  RED.httpAdmin.get('/alchemy-image-analysis/vcap', function (req, res) {
     res.json(service);
   });
 
-  function AlchemyAPINode (config) {
+  function AlchemyImageAnalysisNode (config) {
     RED.nodes.createNode(this, config);
     var node = this;
 
@@ -45,32 +48,20 @@ module.exports = function (RED) {
         return;
       }
 
-      var enabled_features = FEATURES.filter(function (feature) { 
-        return config[feature]
-      });
-
-      if (!enabled_features.length) {
-        node.error('AlchemyAPI node must have at least one selected feature.');
-        return;
-      }
+      var feature = config["image-feature"];
 
       // Do the request here....
-      alchemy.combined(msg.payload, {features: enabled_features}, function (err, response) {
+      alchemy[feature](msg.payload, {}, function (err, response) {
         if (err || response.status === "ERROR") { 
           node.error('Alchemy API request error: ',  err || response.statusInfo); 
           return;
         }
 
-        // TODO: NEED TO VERIFY FEATURES NAMES ARE THE SAME IN THRE RESPONSE
-        msg.features = {};
-        FEATURES.forEach(function (feature) { 
-          msg.features[feature] = response[feature];
-        });
-
+        msg.result = response[FEATURE_RESPONSES[feature]];
         node.send(msg)
       })
     });
   }
 
-  RED.nodes.registerType('alchemy-api', AlchemyAPINode);
+  RED.nodes.registerType('alchemy-image-analysis', AlchemyImageAnalysisNode);
 };

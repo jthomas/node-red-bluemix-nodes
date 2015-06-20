@@ -14,7 +14,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="alchemy-api">
+<script type="text/x-red" data-template-name="alchemy-feature-extract">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -66,7 +66,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="alchemy-api">
+<script type="text/x-red" data-help-name="alchemy-feature-extract">
     <p>Using the Question and Answer service you can connect to Watson, post questions, and receive responses.</p>
     <p>There are two default corpora to choose from.</p>
     <ul>
@@ -82,7 +82,7 @@
 <script type="text/javascript">
     (function() {
 
-        RED.nodes.registerType('alchemy-api', {
+        RED.nodes.registerType('alchemy-feature-extract', {
             category: 'Alchemy API',
             defaults: {
               name: {value: ""},
@@ -103,15 +103,15 @@
             inputs: 1,
             outputs: 1,
             icon: "question.png",
-            paletteLabel: "Alchemy API",
+            paletteLabel: "Feature Extract",
             label: function() {
-                return this.name || "Alchemy API";
+                return this.name || "Feature Extract";
             },
             labelStyle: function() {
                 return this.name ? "node_label_italic" : "";
             },
             oneditprepare: function() {
-              $.getJSON('alchemy-api/vcap/', function(service) {
+              $.getJSON('alchemy-feature-extract/vcap/', function(service) {
                 if (!service) {
                   $("#node-missing-service-warning").show();
                 }
