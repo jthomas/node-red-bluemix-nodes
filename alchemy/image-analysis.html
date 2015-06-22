@@ -32,16 +32,18 @@
 </script>
 
 <script type="text/x-red" data-help-name="alchemy-image-analysis">
-    <p>Using the Question and Answer service you can connect to Watson, post questions, and receive responses.</p>
-    <p>There are two default corpora to choose from.</p>
+    <p>Using the Image Analysis node, you can use the Alchemy APIs to analyse images for face detection, content tags and links.</p>
+    <p>The following features are available for analysis:</p>
     <ul>
-        <li><b>Watson for Healthcare</b>, which derives cognitive conclusions from documents about health concerns and diseases.</li>
-        <li><b>Watson for Travel</b>, which responds to questions based on cognitive analysis of a corpus that was initially created from documents about travel and associated locations.</li>
+        <li><b>Faces</b>, discover human faces within the images.</li>
+        <li><b>URLs</b>, discover URLs within the images.</li>
+        <li><b>Content Tags</b>, extract content tags from the image.</li>
     </ul>
-    <p>The question you want to ask should be passed in on <b>msg.payload</b>.</p>
-    <p>If you choose to only return the top answer, the answer will returned in <b>msg.payload</b> and the confidence of that answer in <b>msg.confidence</b>.</p>
-    <p>If you choose to return all answers, the results array will be returned in <b>msg.payload</b>. Each answer in the array will have a <b>payload</b> and <b>confidence</b> property.</p>
-    <p>For more information about the Question and Answer service, read the <a href="https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/question-answer.html">documentation</a>.</p>
+    <p>For full details on the feature details and response values, please see the <a href="http://www.alchemyapi.com/api">Alchemy API documentation</a></p>
+    <p>The content to be analysed should be passed in on <b>msg.payload</b>.</p>
+    <p>Valid <b>msg.payload</b> types: URL or Buffer containing raw image bytes.</p>
+    <br>
+    <p>Results from the Alchemy API service will made available at <b>msg.result</b>.</p>
 </script>
 
 <script type="text/javascript">
