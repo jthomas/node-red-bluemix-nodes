@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-var FEATURES = ["page-image", "image-keyword", "feed", "entity", 
-  "keyword", "title", "author", "taxonomy", "concept", "relation",
-  "pub-date", "doc-sentiment"];
+var FEATURES = {
+  'page-image': 'image',
+  'image-kw': 'imageKeywords',
+  'feed': 'feed',
+  'entity': 'entities',
+  'keyword': 'keywords',
+  'title': 'title',
+  'author': 'author',
+  'taxonomy': 'taxonomy',
+  'concept': 'concepts',
+  'relation': 'relations',
+  'pub-date': 'publicationDate',
+  'doc-sentiment': 'docSentiment'
+};
 
 module.exports = function (RED) {
   var cfenv = require('cfenv'),
     AlchemyAPI = require('alchemy-api');
 
-  //TODO: Can I find the service using regex?
-  var service = cfenv.getAppEnv().getService('AlchemyAPI');
+  var service = cfenv.getAppEnv().getServiceCreds(/alchemy/i);
 
   RED.httpAdmin.get('/alchemy-feature-extract/vcap', function (req, res) {
     res.json(service);
@@ -37,7 +47,7 @@ module.exports = function (RED) {
       return;
     } 
     
-    var alchemy = new AlchemyAPI(service.credentials.apikey);
+    var alchemy = new AlchemyAPI(service.apikey);
 
     this.on('input', function (msg) {
       if (!msg.payload) {
@@ -45,7 +55,7 @@ module.exports = function (RED) {
         return;
       }
 
-      var enabled_features = FEATURES.filter(function (feature) { 
+      var enabled_features = Object.keys(FEATURES).filter(function (feature) { 
         return config[feature]
       });
 
@@ -54,17 +64,16 @@ module.exports = function (RED) {
         return;
       }
 
-      // Do the request here....
-      alchemy.combined(msg.payload, {features: enabled_features}, function (err, response) {
-        if (err || response.status === "ERROR") { 
-          node.error('Alchemy API request error: ',  err || response.statusInfo); 
+      alchemy.combined(msg.payload, enabled_features, {}, function (err, response) {
+        if (err || response.status === 'ERROR') { 
+          node.error('Alchemy API request error: ' + (err ? err : response.statusInfo)); 
           return;
         }
 
-        // TODO: NEED TO VERIFY FEATURES NAMES ARE THE SAME IN THRE RESPONSE
         msg.features = {};
-        FEATURES.forEach(function (feature) { 
-          msg.features[feature] = response[feature];
+        Object.keys(FEATURES).forEach(function (feature) { 
+          var answer_feature = FEATURES[feature];
+          msg.features[feature] = response[answer_feature];
         });
 
         node.send(msg)

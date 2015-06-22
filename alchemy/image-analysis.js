@@ -15,17 +15,16 @@
  **/
 
 var FEATURE_RESPONSES = {
-  faces: 'imageFaces',
+  imageFaces: 'imageFaces',
   imageLink: "image",
-  imageKeywords: "FILL ME IN"
+  imageKeywords: "imageKeywords"
 };
 
 module.exports = function (RED) {
   var cfenv = require('cfenv'),
     AlchemyAPI = require('alchemy-api');
 
-  //TODO: Can I find the service using regex?
-  var service = cfenv.getAppEnv().getService('AlchemyAPI');
+  var service = cfenv.getAppEnv().getServiceCreds(/alchemy/i);
 
   RED.httpAdmin.get('/alchemy-image-analysis/vcap', function (req, res) {
     res.json(service);
@@ -40,7 +39,7 @@ module.exports = function (RED) {
       return;
     } 
     
-    var alchemy = new AlchemyAPI(service.credentials.apikey);
+    var alchemy = new AlchemyAPI(service.apikey);
 
     this.on('input', function (msg) {
       if (!msg.payload) {
@@ -50,10 +49,9 @@ module.exports = function (RED) {
 
       var feature = config["image-feature"];
 
-      // Do the request here....
       alchemy[feature](msg.payload, {}, function (err, response) {
         if (err || response.status === "ERROR") { 
-          node.error('Alchemy API request error: ',  err || response.statusInfo); 
+          node.error('Alchemy API request error: ' + (err ? err : response.statusInfo)); 
           return;
         }
 

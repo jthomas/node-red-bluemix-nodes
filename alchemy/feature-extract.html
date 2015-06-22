@@ -26,7 +26,7 @@
               <input style="width: 30px; margin-left: 20px; margin-top: 0;" type="checkbox" id="node-input-page-image"><label style="width: auto;" for="node-input-page-image">Page Images</label>
             </div>
             <div>
-              <input style="width: 30px; margin-left: 20px; margin-top: 0;" type="checkbox" id="node-input-image-keyword"><label style="width: auto;" for="node-input-image-keyword">Image Keywords</label>
+              <input style="width: 30px; margin-left: 20px; margin-top: 0;" type="checkbox" id="node-input-image-kw"><label style="width: auto;" for="node-input-image-kw">Image Keywords</label>
             </div>
             <div>
               <input style="width: 30px; margin-left: 20px; margin-top: 0;" type="checkbox" id="node-input-feed"><label style="width: auto;" for="node-input-feed">Feed</label>
@@ -87,7 +87,7 @@
             defaults: {
               name: {value: ""},
               "page-image": {value: ""},
-              "image-keyword": {value: ""},
+              "image-kw": {value: ""},
               feed: {value: ""},
               entity: {value: ""},
               keyword: {value: ""},
@@ -99,10 +99,10 @@
               "pub-date": {value: ""},
               "doc-sentiment": {value: ""}
             },
-            color: "rgb(32, 178, 239)",
+            color: '#00A2FF',
             inputs: 1,
             outputs: 1,
-            icon: "question.png",
+            icon: "alchemy.png",
             paletteLabel: "Feature Extract",
             label: function() {
                 return this.name || "Feature Extract";
