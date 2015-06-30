@@ -64,7 +64,7 @@ module.exports = function (RED) {
         return;
       }
 
-      alchemy.combined(msg.payload, enabled_features, msg.options || {}, function (err, response) {
+      alchemy.combined(msg.payload, enabled_features, msg.alchemy_options || {}, function (err, response) {
         if (err || response.status === 'ERROR') { 
           node.error('Alchemy API request error: ' + (err ? err : response.statusInfo)); 
           return;

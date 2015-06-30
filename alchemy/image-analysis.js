@@ -49,7 +49,7 @@ module.exports = function (RED) {
 
       var feature = config["image-feature"];
 
-      alchemy[feature](msg.payload, {}, function (err, response) {
+      alchemy[feature](msg.payload, msg.alchemy_options || {}, function (err, response) {
         if (err || response.status === "ERROR") { 
           node.error('Alchemy API request error: ' + (err ? err : response.statusInfo)); 
           return;
